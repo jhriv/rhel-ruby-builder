@@ -1,0 +1,3 @@
+[submodule "ruby-rpm"]
+	path = ruby-rpm
+	url = https://github.com/feedforce/ruby-rpm.git

@@ -1,0 +1,5 @@
+# Vagrant as Infrastructure files
+.inventory
+.ssh-config
+.vagrant
+ansible.cfg
