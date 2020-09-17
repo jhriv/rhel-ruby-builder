@@ -1,0 +1,43 @@
+---
+
+- name: Register with RHEL
+  hosts: all
+
+  tasks:
+    - name: Get subscription status
+      command: subscription-manager status
+      become: true
+      failed_when: false
+      changed_when: false
+      register: status
+
+    - block:
+      - name: Get username
+        pause:
+          prompt: "RHEL Username (user):"
+        register: rhel_user
+        when: user is undefined
+      - name: Get password
+        pause:
+          prompt: "RHEL Password (pass):"
+          echo: false
+        register: rhel_pass
+        when: pass is undefined
+
+      - name: Do the register
+        command: >
+          subscription-manager register
+            --username={{ user | default (rhel_user.user_input) }}
+            --password={{ pass | default (rhel_pass.user_input) }}
+            --auto-attach
+        no_log: true
+        become: true
+
+      - name: Get the optional repo
+        command: >
+          subscription-manager repos
+            --enable rhel-7-server-optional-rpms
+        become: true
+
+      when:
+        - '"Overall Status: Unknown" in status.stdout'

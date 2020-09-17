@@ -1,0 +1,21 @@
+---
+
+- name: Build the RPM
+  hosts: all
+
+  tasks:
+  - name: Build the RPM
+    command: >
+      sh ./build-rpm.sh {{ ruby_version }}
+
+  - name: Get list of the RPMs
+    find:
+      paths: /tmp/ruby-{{ ruby_version }}-rpm/
+    register: rpms
+
+  - name: Get the RPMs
+    fetch:
+      src: '{{ item.path }}'
+      dest: ..
+    with_items:
+      - '{{ rpms.files }}'

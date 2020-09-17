@@ -1,0 +1,29 @@
+---
+
+- name: Setup build machine dependencies
+  hosts: all
+
+  tasks:
+    - name: Create directory for source scripts
+      file:
+        path: '{{ item }}'
+        state: directory
+      with_items:
+        - ruby-rpm
+        - rpmbuild/SPECS
+        - rpmbuild/SOURCES
+
+    - name: Copy spec file
+      copy:
+        # relative to location of playbook
+        src: ../ruby-rpm/ruby-{{ ruby_version }}.spec
+        dest: ruby-rpm/ruby-{{ ruby_version }}.spec
+
+    - name: Copy build script
+      copy:
+        src: ../ruby-rpm/.circleci/build-rpm.sh
+        dest: build-rpm.sh
+
+    - name: Install build dependencies
+      command: yum-builddep ruby-rpm/ruby-{{ ruby_version }}.spec
+      become: true

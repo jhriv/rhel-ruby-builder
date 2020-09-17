@@ -3,3 +3,6 @@
 .ssh-config
 .vagrant
 ansible.cfg
+
+# Saved build artifacts
+ruby-build
